@@ -1,0 +1,14 @@
+* {
+    margin: 0px;
+}
+
+.home-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background: rgb(30,30,30);
+}
+
+.MuiCircularProgress-svg {
+    color: white !important;
+}
