@@ -12,3 +12,7 @@ export const CORRECT_CODE_FILENAME = "correctCode";
 export const TESTING_CODE_FILENAME = "testingCode";
 export const INPUT_GENERATING_CODE_FILENAME = "inputGeneratingCode";
 export const RESULT_FILENAME = "result";
+
+export const CPP = "cpp";
+export const JAVA = "java";
+export const PYTHON = "py";
