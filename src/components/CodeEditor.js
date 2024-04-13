@@ -17,7 +17,7 @@ export default function CodeEditor(props) {
     useEffect(() => {
         const file = files[props.fileName];
         setEditorValue(file.content);
-        setEditorLanguage(file.language);
+        setEditorLanguage(file.language == "py" ? "python" : file.language);
     }, [props.fileName]);
 
     const handleChange = (editor) => {
