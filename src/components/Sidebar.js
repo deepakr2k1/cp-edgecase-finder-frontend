@@ -8,31 +8,60 @@ import * as AppConstants from '../constants/AppConstants';
 
 import { MenuItem, Select, InputLabel, TextField } from '@mui/material';
 import { updateTestRuns } from '../slices/paramSlices';
+import { updateCode } from '../slices/fileSlices';
+import { updateIgcTemplateName } from '../slices/paramSlices';
+
+
+const igcTemplates = {
+    "cpp": {
+        "name1c": "code1c",
+        "name2c": "code2c",
+        "name3c": "code3c"
+    },
+    "java": {
+        "name1j": "code1j",
+        "name2j": "code2j",
+        "name3j": "code3j"
+    },
+    "py": {
+        "name1p": "code1p",
+        "name2p": "code2p",
+        "name3p": "code3p"
+    }
+};
+
+const igcTemplateNames = [
+    "t_name_1",
+    "t_name_2",
+    "t_name_3"
+];
 
 export default function Sidebar() {
     const dispatch = useDispatch();
     const files = useSelector(state => state.files);
     const params = useSelector(state => state.param);
 
-
     const [open, setOpen] = useState(false);
-    const [testRuns, setTestRuns] = useState(null);
-
-    useEffect(() => {
-        const _testRuns = params.testRuns;
-        const filename = params.filename;
-        const lang = files[filename]?.language;
-        setTestRuns(_testRuns);
-    });
-
-    const toggleDrawer = (state) => () => {
-        setOpen(state);
-    };
 
     const handleTestRunsChange = (event) => {
         const val = event.target.value;
         if (val < 1 || val > 100) return;
         dispatch(updateTestRuns({ testRuns: val }));
+    };
+
+    const handleIgcTemplate = (event) => {
+        const val = event.target.value;
+        dispatch(updateIgcTemplateName({ igcTemplateName: val }));
+        applyIgcTemplate(files.inputGeneratingCode.language, val);
+    };
+
+    const applyIgcTemplate = (lang, t_name) => {
+        const code = `some code to get from some var, ${lang} & ${t_name}`;
+        dispatch(updateCode({ fileName: "inputGeneratingCode", content: code }));
+    };
+
+    const toggleDrawer = (state) => () => {
+        setOpen(state);
     };
 
     const stopPropagation = (event) => {
@@ -41,11 +70,11 @@ export default function Sidebar() {
 
     const DrawerList = (
         <Box sx={ { width: 250, p: 2 } } role="presentation" onClick={ toggleDrawer(false) }>
-            <InputLabel id="test-runs" >Test Runs</InputLabel>
+            <InputLabel id="test-runs" sx={ { marginTop: 3 } }>Test Runs</InputLabel>
             <TextField
                 variant="outlined"
                 fullWidth
-                value={ testRuns }
+                value={ params.testRuns }
                 color='secondary'
                 type="number"
                 inputProps={ {
@@ -55,6 +84,20 @@ export default function Sidebar() {
                 } }
                 onChange={ handleTestRunsChange }
                 onClick={ stopPropagation } />
+            <InputLabel id="language" sx={ { mt: 2 } }>Input Generating Code Template</InputLabel>
+            <Select
+                id="input-generating-code-template"
+                fullWidth
+                value={ params.igcTemplateName }
+                color='secondary'
+                onChange={ handleIgcTemplate }
+                onClick={ stopPropagation } >
+                {
+                    igcTemplateNames.map((templateName) => {
+                        return <MenuItem value={ templateName }>{ templateName }</MenuItem>;
+                    })
+                }
+            </Select>
         </Box>
     );
 

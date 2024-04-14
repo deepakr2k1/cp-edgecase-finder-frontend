@@ -9,6 +9,7 @@ import * as AppConstants from '../constants/AppConstants';
 import * as AppConfigs from '../constants/AppConfigs';
 import { updateFilename } from '../slices/paramSlices';
 import { updateLanguage } from '../slices/fileSlices';
+import { updateCode } from '../slices/fileSlices';
 
 
 export default function Home() {
@@ -19,13 +20,6 @@ export default function Home() {
     const [loading, setLoading] = useState(false);
     const [tabName, setTabName] = useState(AppConstants.CORRECT_CODE);
     const [fileName, setFileName] = useState(AppConstants.CORRECT_CODE_FILENAME);
-    const [language, setLanguage] = useState(null);
-
-    useEffect(() => {
-        const filename = params.filename;
-        const lang = files[filename]?.language;
-        setLanguage(lang);
-    });
 
     const onSubmit = async () => {
         try {
@@ -85,10 +79,18 @@ export default function Home() {
         }
     };
 
+    const applyIgcTemplate = (lang, t_name) => {
+        const code = `some code to get from some var, ${lang} & ${t_name}`;
+        dispatch(updateCode({ fileName: "inputGeneratingCode", content: code }));
+
+    };
+
     const handleLangChange = (event) => {
         const val = event.target.value;
         dispatch(updateLanguage({ fileName: params.filename, language: val }));
-        setLanguage(val);
+        if (tabName === AppConstants.INPUT_GENERATING_CODE && params.igcTemplateName) {
+            applyIgcTemplate(val, params.igcTemplateName);
+        }
     };
 
     return (
@@ -111,7 +113,7 @@ export default function Home() {
                             <Select
                                 id="language"
                                 fullWidth
-                                value={ language }
+                                value={ files[params.filename].language }
                                 color='secondary'
                                 onChange={ handleLangChange }
                                 sx={ {
