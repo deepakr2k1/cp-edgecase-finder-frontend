@@ -129,11 +129,10 @@ export default function Home() {
                 </Box>
             </Box >
 
-            {
-                tabName === AppConstants.RESULT ?
-                    <Result fileName={ fileName } /> :
-                    <CodeEditor fileName={ fileName } />
-            }
+            { tabName === AppConstants.CORRECT_CODE && <CodeEditor fileName={ fileName } /> }
+            { tabName === AppConstants.TESTING_CODE && <CodeEditor fileName={ fileName } /> }
+            { tabName === AppConstants.INPUT_GENERATING_CODE && <CodeEditor fileName={ fileName } /> }
+            { tabName === AppConstants.RESULT && <Result fileName={ fileName } /> }
 
             <div>
                 <Button
