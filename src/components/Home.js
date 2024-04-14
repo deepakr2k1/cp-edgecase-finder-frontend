@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Tabs, Tab, Button, CircularProgress, Box } from '@mui/material';
+import { Tabs, Tab, Button, CircularProgress, Box, MenuItem, Select } from '@mui/material';
 import { updateResult } from '../slices/resultSlices';
 import Sidebar from './Sidebar';
 import CodeEditor from './CodeEditor';
@@ -8,6 +8,8 @@ import Result from './Result';
 import * as AppConstants from '../constants/AppConstants';
 import * as AppConfigs from '../constants/AppConfigs';
 import { updateFilename } from '../slices/paramSlices';
+import { updateLanguage } from '../slices/fileSlices';
+
 
 export default function Home() {
     const dispatch = useDispatch();
@@ -17,6 +19,13 @@ export default function Home() {
     const [loading, setLoading] = useState(false);
     const [tabName, setTabName] = useState(AppConstants.CORRECT_CODE);
     const [fileName, setFileName] = useState(AppConstants.CORRECT_CODE_FILENAME);
+    const [language, setLanguage] = useState(null);
+
+    useEffect(() => {
+        const filename = params.filename;
+        const lang = files[filename]?.language;
+        setLanguage(lang);
+    });
 
     const onSubmit = async () => {
         try {
@@ -76,6 +85,12 @@ export default function Home() {
         }
     };
 
+    const handleLangChange = (event) => {
+        const val = event.target.value;
+        dispatch(updateLanguage({ fileName: params.filename, language: val }));
+        setLanguage(val);
+    };
+
     return (
         <div className='home-container'>
             <Box sx={ { display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: 50, background: 'white' } }>
@@ -90,8 +105,29 @@ export default function Home() {
                     <Tab value={ AppConstants.INPUT_GENERATING_CODE } label={ AppConstants.INPUT_GENERATING_CODE_LABEL } />
                     <Tab value={ AppConstants.RESULT } label={ AppConstants.RESULT_LABEL } />
                 </Tabs>
-                <Sidebar />
-            </Box>
+                <Box sx={ { display: 'flex', alignItems: 'center', height: 50, background: 'white' } }>
+                    {
+                        tabName !== AppConstants.RESULT ?
+                            <Select
+                                id="language"
+                                fullWidth
+                                value={ language }
+                                color='secondary'
+                                onChange={ handleLangChange }
+                                sx={ {
+                                    '.MuiOutlinedInput-notchedOutline': { border: 'none' },
+                                    '&:hover .MuiOutlinedInput-notchedOutline': { border: 'none' },
+                                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': { border: 'none' }
+                                } }>
+                                <MenuItem value={ AppConstants.CPP }>C++</MenuItem>
+                                <MenuItem value={ AppConstants.JAVA }>Java</MenuItem>
+                                <MenuItem value={ AppConstants.PYTHON }>Python</MenuItem>
+                            </Select>
+                            : null
+                    }
+                    <Sidebar />
+                </Box>
+            </Box >
 
             {
                 tabName === AppConstants.RESULT ?

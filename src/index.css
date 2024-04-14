@@ -12,3 +12,7 @@
 .MuiCircularProgress-svg {
     color: white !important;
 }
+
+.MuiDrawer-paperAnchorRight {
+    margin-top: 50px;
+}

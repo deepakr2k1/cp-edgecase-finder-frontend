@@ -8,7 +8,6 @@ import * as AppConstants from '../constants/AppConstants';
 
 import { MenuItem, Select, InputLabel, TextField } from '@mui/material';
 import { updateTestRuns } from '../slices/paramSlices';
-import { updateLanguage } from '../slices/fileSlices';
 
 export default function Sidebar() {
     const dispatch = useDispatch();
@@ -17,7 +16,6 @@ export default function Sidebar() {
 
 
     const [open, setOpen] = useState(false);
-    const [language, setLanguage] = useState(null);
     const [testRuns, setTestRuns] = useState(null);
 
     useEffect(() => {
@@ -25,17 +23,10 @@ export default function Sidebar() {
         const filename = params.filename;
         const lang = files[filename]?.language;
         setTestRuns(_testRuns);
-        setLanguage(lang);
     });
 
     const toggleDrawer = (state) => () => {
         setOpen(state);
-    };
-
-    const handleLangChange = (event) => {
-        const val = event.target.value;
-        dispatch(updateLanguage({ fileName: params.filename, language: val }));
-        setLanguage(val);
     };
 
     const handleTestRunsChange = (event) => {
@@ -50,19 +41,7 @@ export default function Sidebar() {
 
     const DrawerList = (
         <Box sx={ { width: 250, p: 2 } } role="presentation" onClick={ toggleDrawer(false) }>
-            <InputLabel id="language">Language</InputLabel>
-            <Select
-                id="language"
-                fullWidth
-                value={ language }
-                color='secondary'
-                onChange={ handleLangChange }
-                onClick={ stopPropagation } >
-                <MenuItem value={ AppConstants.CPP }>C++</MenuItem>
-                <MenuItem value={ AppConstants.JAVA }>Java</MenuItem>
-                <MenuItem value={ AppConstants.PYTHON }>Python</MenuItem>
-            </Select>
-            <InputLabel id="test-runs" sx={ { marginTop: 3 } }>Test Runs</InputLabel>
+            <InputLabel id="test-runs" >Test Runs</InputLabel>
             <TextField
                 variant="outlined"
                 fullWidth
