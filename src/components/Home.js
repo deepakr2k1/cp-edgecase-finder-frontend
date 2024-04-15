@@ -31,15 +31,9 @@ export default function Home() {
                 testRuns: params.testRuns
             };
 
-            const response = await fetch(`${AppConfigs.API_HOST}/api/code-run`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(payload)
-            });
+            const result = await fetchData(payload);
 
-            const result = await response.json();
+            console.log(result);
 
             if (result.errorMessage) {
                 dispatch(updateResult({ result: result.errorMessage }));
@@ -54,6 +48,7 @@ export default function Home() {
                 }));
             }
         } catch (error) {
+            console.log(error);
             console.error('Error fetching data:', error);
         } finally {
             dispatch(updateFilename({ filename: AppConstants.RESULT }));
@@ -86,8 +81,21 @@ export default function Home() {
     );
 }
 
-// const fetchData = () => {
-//     return new Promise((resolve, reject) => {
+const fetchData = (payload) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const response = await fetch(`${AppConfigs.API_HOST}/api/code-run`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            });
 
-//     });
-// };
+            const result = await response.json();
+            resolve(result);
+        } catch (err) {
+            reject(err);
+        }
+    });
+};

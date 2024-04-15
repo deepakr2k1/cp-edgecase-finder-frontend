@@ -1,5 +1,5 @@
 import Editor from '@monaco-editor/react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 export default function Result() {
 
