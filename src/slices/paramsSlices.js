@@ -2,13 +2,13 @@ import { createSlice } from '@reduxjs/toolkit';
 import * as AppConstants from '../constants/AppConstants';
 
 const initialState = {
-    filename: AppConstants.CORRECT_CODE_FILENAME,
+    filename: AppConstants.CORRECT_CODE,
     testRuns: 10,
-    igcTemplate: null
+    templateName: null
 };
 
-export const paramSlice = createSlice({
-    name: 'param',
+export const paramsSlice = createSlice({
+    name: 'params',
     initialState,
     reducers: {
         updateFilename: (state, action) => {
@@ -19,13 +19,13 @@ export const paramSlice = createSlice({
             const { testRuns } = action.payload;
             state.testRuns = testRuns;
         },
-        updateIgcTemplateName: (state, action) => {
-            const { igcTemplateName } = action.payload;
-            state.igcTemplate = igcTemplateName;
+        updateTemplateName: (state, action) => {
+            const { templateName } = action.payload;
+            state.templateName = templateName;
         },
     }
 });
 
-export const { updateFilename, updateTestRuns, updateIgcTemplateName } = paramSlice.actions;
+export const { updateFilename, updateTestRuns, updateTemplateName } = paramsSlice.actions;
 
-export default paramSlice.reducer;
+export default paramsSlice.reducer;

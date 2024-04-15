@@ -1,10 +1,8 @@
 import { combineReducers } from 'redux';
-import fileReducer from '../slices/fileSlices';
-import resultReducer from '../slices/resultSlices';
-import paramReducer from '../slices/paramSlices';
+import filesReducer from '../slices/filesSlices';
+import paramsReducer from '../slices/paramsSlices';
 
 export const rootReducer = combineReducers({
-    files: fileReducer,
-    result: resultReducer,
-    param: paramReducer
+    files: filesReducer,
+    params: paramsReducer
 });

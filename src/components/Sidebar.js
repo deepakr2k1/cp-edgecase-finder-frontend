@@ -1,64 +1,21 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import Box from '@mui/material/Box';
-import Drawer from '@mui/material/Drawer';
-import Button from '@mui/material/Button';
+import { Box, Button, Drawer, MenuItem, Select, InputLabel, TextField } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
+
+import { updateCode } from '../slices/filesSlices';
+import { updateTestRuns, updateTemplateName } from '../slices/paramsSlices';
+
 import * as AppConstants from '../constants/AppConstants';
-
-import { MenuItem, Select, InputLabel, TextField } from '@mui/material';
-import { updateTestRuns } from '../slices/paramSlices';
-import { updateCode } from '../slices/fileSlices';
-import { updateIgcTemplateName } from '../slices/paramSlices';
-
-
-const igcTemplates = {
-    "cpp": {
-        "name1c": "code1c",
-        "name2c": "code2c",
-        "name3c": "code3c"
-    },
-    "java": {
-        "name1j": "code1j",
-        "name2j": "code2j",
-        "name3j": "code3j"
-    },
-    "py": {
-        "name1p": "code1p",
-        "name2p": "code2p",
-        "name3p": "code3p"
-    }
-};
-
-const igcTemplateNames = [
-    "t_name_1",
-    "t_name_2",
-    "t_name_3"
-];
+import templates from '../constants/CodeTemplates';
 
 export default function Sidebar() {
+
     const dispatch = useDispatch();
     const files = useSelector(state => state.files);
-    const params = useSelector(state => state.param);
+    const params = useSelector(state => state.params);
 
     const [open, setOpen] = useState(false);
-
-    const handleTestRunsChange = (event) => {
-        const val = event.target.value;
-        if (val < 1 || val > 100) return;
-        dispatch(updateTestRuns({ testRuns: val }));
-    };
-
-    const handleIgcTemplate = (event) => {
-        const val = event.target.value;
-        dispatch(updateIgcTemplateName({ igcTemplateName: val }));
-        applyIgcTemplate(files.inputGeneratingCode.language, val);
-    };
-
-    const applyIgcTemplate = (lang, t_name) => {
-        const code = `some code to get from some var, ${lang} & ${t_name}`;
-        dispatch(updateCode({ fileName: "inputGeneratingCode", content: code }));
-    };
 
     const toggleDrawer = (state) => () => {
         setOpen(state);
@@ -68,32 +25,48 @@ export default function Sidebar() {
         event.stopPropagation();
     };
 
+    const handleTestRunsChange = (event) => {
+        const testRuns = event.target.value;
+        if (testRuns < 1 || testRuns > 100) return;
+        dispatch(updateTestRuns({ testRuns }));
+    };
+
+    const handleTemplateNameChange = (event) => {
+        const templateName = event.target.value;
+        dispatch(updateTemplateName({ templateName }));
+        applyTemplate(files.inputGeneratingCode.language, templateName);
+    };
+
+    const applyTemplate = (lang, templateName) => {
+        if (!templateName) return;
+        const code = templates[lang][templateName];
+        dispatch(updateCode({ fileName: AppConstants.INPUT_GENERATING_CODE, content: code }));
+    };
+
     const DrawerList = (
         <Box sx={ { width: 250, p: 2 } } role="presentation" onClick={ toggleDrawer(false) }>
-            <InputLabel id="test-runs" sx={ { marginTop: 3 } }>Test Runs</InputLabel>
+            <InputLabel id="test-runs-label" sx={ { marginTop: 3 } }>Test Runs</InputLabel>
             <TextField
+                id="test-runs"
                 variant="outlined"
+                color="secondary"
+                type="number"
                 fullWidth
                 value={ params.testRuns }
-                color='secondary'
-                type="number"
-                inputProps={ {
-                    min: 1,
-                    max: 100,
-                    step: 1
-                } }
+                inputProps={ { min: 1, max: 100, step: 1 } }
                 onChange={ handleTestRunsChange }
                 onClick={ stopPropagation } />
-            <InputLabel id="language" sx={ { mt: 2 } }>Input Generating Code Template</InputLabel>
+
+            <InputLabel id="template-name-label" sx={ { mt: 2 } }>Input Generating Code Template</InputLabel>
             <Select
-                id="input-generating-code-template"
+                id="template-name"
+                color="secondary"
                 fullWidth
-                value={ params.igcTemplateName }
-                color='secondary'
-                onChange={ handleIgcTemplate }
+                value={ params.templateName }
+                onChange={ handleTemplateNameChange }
                 onClick={ stopPropagation } >
                 {
-                    igcTemplateNames.map((templateName) => {
+                    AppConstants.templateNames.map((templateName) => {
                         return <MenuItem value={ templateName }>{ templateName }</MenuItem>;
                     })
                 }
@@ -104,7 +77,7 @@ export default function Sidebar() {
     return (
         <div>
             <Button onClick={ toggleDrawer(true) }>
-                <MenuIcon color='secondary' />
+                <MenuIcon color="secondary" />
             </Button>
             <Drawer
                 anchor="right"

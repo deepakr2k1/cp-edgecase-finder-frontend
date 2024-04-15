@@ -12,11 +12,12 @@ const initialState = {
     inputGeneratingCode: {
         content: "// Write Input Generating code here...",
         language: "cpp"
-    }
+    },
+    result: null
 };
 
-export const fileSlice = createSlice({
-    name: 'file',
+export const filesSlice = createSlice({
+    name: 'files',
     initialState,
     reducers: {
         updateCode: (state, action) => {
@@ -27,9 +28,13 @@ export const fileSlice = createSlice({
             const { fileName, language } = action.payload;
             state[fileName] = { ...state[fileName], language };
         },
+        updateResult: (state, action) => {
+            const { result } = action.payload;
+            state["result"] = result;
+        },
     }
 });
 
-export const { updateCode, updateLanguage } = fileSlice.actions;
+export const { updateCode, updateLanguage, updateResult } = filesSlice.actions;
 
-export default fileSlice.reducer;
+export default filesSlice.reducer;
