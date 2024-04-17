@@ -13,7 +13,8 @@ export const JAVA = "java";
 export const PYTHON = "python";
 
 export const templateNames = [
-    "name1",
-    "name2",
-    "name3"
+    "Array Input",
+    "String Input",
+    "Tree Input",
+    "Graph Input"
 ];
